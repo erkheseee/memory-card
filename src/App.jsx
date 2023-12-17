@@ -25,7 +25,12 @@ function App() {
     return () => { ignore = true };
   }, []);
 
+  useEffect(() => {
+    bestScore == 12 && alert("You have won");
+  },[bestScore])
+
   function shuffleNewCards() {
+    // console.log("AAAAAAAAAAAA");
       const temp2 = [...temp].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon, key: Math.random()}));
       setImages(temp2);
       setScore(0);
@@ -33,24 +38,29 @@ function App() {
     }
 
   function shuffleCards() {
+      // console.log('BBBBBBBBBBB');
       const temp2 = [...images].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon}));
       setImages(temp2);
     }
 
   function handleCardClick(id) {
-    console.log(clickedCards);
-    clickedCards.map(clickedCard => {
-      clickedCard === id && shuffleNewCards();
-    })
+    if (clickedCards.includes(id) == true){
+        shuffleNewCards();
+        alert("Game Over!")
+    }
+    if (!clickedCards.includes(id) == true){
     setClickedCards(current => [...current, id]);
     setScore(score+1);
     bestScore<=score && setBestScore(score+1);
+    score == 12 && alert("You Win!");
     shuffleCards();
+    }
   }
 
   return (
     <>
       <div>
+        <h1 style={{color: 'orange'}}>Memory Card Game by @erkheseee</h1>
         <button onClick={shuffleNewCards}>New Game</button>
         <div className='score'>
           <h3>Score: {score}</h3>
@@ -62,6 +72,7 @@ function App() {
           <div className="card" key={image.key} onClick={() => {handleCardClick(image.key)}}><img src={image.src} alt={image.src} ></img><a>{images.name}</a></div>
         ))}
       </div>
+      <h2 style={{color: 'orange'}}>Get points by clicking on an pokemon, but do not click on any more than once!</h2>
     </>
   )
 }
