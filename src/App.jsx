@@ -1,43 +1,55 @@
 import { useState, useEffect } from 'react';
 import './App.css'
 
+const names = ['snorlax', 'charizard', 'meowth', 'squirtle', 'onix', 'eevee', 'pikachu', 'bulbasaur', 'greninja', 'mewtwo', 'jigglypuff', 'weedle'];
+const temp = [];  
+
 function App() {
   const [images, setImages] = useState([]);
-
-  function fetchPokemonData(pokemon) {
-    let url = pokemon.url // <--- this is saving the pokemon url to a      variable to us in a fetch.(Ex: https://pokeapi.co/api/v2/pokemon/1/)
-    fetch(url)
-      .then(response => response.json())
-      .then(function (pokeData) {
-        let object = {};
-        object.src = pokeData['sprites']['front_default'];
-        object.key = Math.random();
-        setImages(current => [...current, object]);
-      })
-  }
-
-  const retrieveData = async () => {
-    fetch('https://pokeapi.co/api/v2/pokemon?limit=6&offset=30')
-      .then(response => response.json())
-      .then(function (allpokemon) {
-        allpokemon.results.forEach(function (pokemon) {
-          fetchPokemonData(pokemon);
-        })
-      })
-  }
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   useEffect(() => {
-    retrieveData();
+    let ignore = false;
+    names.map((name) => {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+      .then(response => response.json())
+      .then(function (pokemon) {
+        let object = {};
+        object.src = pokemon['sprites']['front_default'];
+        object.name = name;
+        !ignore && temp.push(object);
+      })
+    });
+    return () => { ignore = true };
   }, []);
 
-  console.log(images);
+  function shuffleCards() {
+    const temp2 = [...temp].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon, key: Math.random()}));
+    console.log(temp2);
+    setImages(temp2);
+    setScore(0);
+  }
+
+  function handleCardClick(id) {
+    console.log('hi');
+  }
 
   return (
-      <div className='App'>
+    <>
+      <div>
+        <button onClick={shuffleCards}>New Game</button>
+        <div className='score'>
+          <h3>Score: {score}</h3>
+          <h3>Best Score: {bestScore}</h3>
+        </div>
+      </div>
+      <div className='container'>
         {images.map(image => (
-          <div key={image.key}><img src={image.src} alt={image.src} ></img></div>
+          <div className="card" key={image.key} onClick={handleCardClick(image.key)}><img src={image.src} alt={image.src} ></img><a>{images.name}</a></div>
         ))}
       </div>
+    </>
   )
 }
 
