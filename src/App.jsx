@@ -60,7 +60,7 @@ function App() {
   return (
     <>
       <div>
-        <h1 style={{color: 'orange'}}>Memory Card Game by @erkheseee</h1>
+        <h1 style={{color: 'orange'}}>Pokémon Memory Card Game by @erkheseee</h1>
         <button onClick={shuffleNewCards}>New Game</button>
         <div className='score'>
           <h3>Score: {score}</h3>
@@ -72,7 +72,7 @@ function App() {
           <div className="card" key={image.key} onClick={() => {handleCardClick(image.key)}}><img src={image.src} alt={image.src} ></img><a>{images.name}</a></div>
         ))}
       </div>
-      <h2 style={{color: 'orange'}}>Get points by clicking on an pokemon, but do not click on any more than once!</h2>
+      <h2 style={{color: 'orange'}}>Get points by clicking on a pokémon, but do not click on any more than once!</h2>
     </>
   )
 }
