@@ -8,6 +8,7 @@ function App() {
   const [images, setImages] = useState([]);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
+  const [clickedCards, setClickedCards] = useState([]);
 
   useEffect(() => {
     let ignore = false;
@@ -24,21 +25,33 @@ function App() {
     return () => { ignore = true };
   }, []);
 
+  function shuffleNewCards() {
+      const temp2 = [...temp].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon, key: Math.random()}));
+      setImages(temp2);
+      setScore(0);
+      setClickedCards([]);
+    }
+
   function shuffleCards() {
-    const temp2 = [...temp].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon, key: Math.random()}));
-    console.log(temp2);
-    setImages(temp2);
-    setScore(0);
-  }
+      const temp2 = [...images].sort(() => Math.random() - 0.5).map((pokemon) => ({...pokemon}));
+      setImages(temp2);
+    }
 
   function handleCardClick(id) {
-    console.log('hi');
+    console.log(clickedCards);
+    clickedCards.map(clickedCard => {
+      clickedCard === id && shuffleNewCards();
+    })
+    setClickedCards(current => [...current, id]);
+    setScore(score+1);
+    bestScore<=score && setBestScore(score+1);
+    shuffleCards();
   }
 
   return (
     <>
       <div>
-        <button onClick={shuffleCards}>New Game</button>
+        <button onClick={shuffleNewCards}>New Game</button>
         <div className='score'>
           <h3>Score: {score}</h3>
           <h3>Best Score: {bestScore}</h3>
@@ -46,7 +59,7 @@ function App() {
       </div>
       <div className='container'>
         {images.map(image => (
-          <div className="card" key={image.key} onClick={handleCardClick(image.key)}><img src={image.src} alt={image.src} ></img><a>{images.name}</a></div>
+          <div className="card" key={image.key} onClick={() => {handleCardClick(image.key)}}><img src={image.src} alt={image.src} ></img><a>{images.name}</a></div>
         ))}
       </div>
     </>
